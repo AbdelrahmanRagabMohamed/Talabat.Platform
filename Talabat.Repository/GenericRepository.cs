@@ -15,7 +15,13 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     }
 
     public async Task<IEnumerable<T>> GetAllAsync()
-     => await _dbContext.Set<T>().ToListAsync();
+    {
+        if (typeof(T) == (typeof(Product)))     // حل مؤقت      
+            return (IEnumerable<T>)await _dbContext.Products.Include(P => P.ProductBrand).Include(P => P.ProductType).ToListAsync();
+        else
+            return await _dbContext.Set<T>().ToListAsync();
+    }
+
 
     public async Task<T> GetByIdAsync(int id)
      => await _dbContext.Set<T>().FindAsync(id);
