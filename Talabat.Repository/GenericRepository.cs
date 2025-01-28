@@ -4,7 +4,7 @@ using Talabat.Core.Repositories;
 using Talabat.Repository.Data;
 
 namespace Talabat.Repository;
-internal class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
+public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
 {
     private readonly StoreContext _dbContext;
 

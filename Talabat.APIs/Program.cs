@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using Talabat.Core.Entites;
+using Talabat.Core.Repositories;
 using Talabat.Repository;
 using Talabat.Repository.Data;
 
@@ -19,6 +21,15 @@ namespace Talabat.APIs
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            /// Allow DI Non Generic
+            ///builder.Services.AddScoped<IGenericRepository<Product>,GenericRepository<Product>>();
+            ///builder.Services.AddScoped<IGenericRepository<ProductBrand>,GenericRepository<ProductBrand>>();
+            ///builder.Services.AddScoped<IGenericRepository<ProductType>,GenericRepository<ProductType>>();
+
+            /// Allow DI Generic
+            builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+
+
             // Allow Dependency Injection for my Context (StoreContext)
             builder.Services.AddDbContext<StoreContext>(Options =>
             {
@@ -26,6 +37,8 @@ namespace Talabat.APIs
             }
 
             );
+
+        
 
             #endregion
 
