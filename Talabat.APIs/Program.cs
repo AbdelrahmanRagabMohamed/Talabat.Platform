@@ -1,5 +1,8 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Talabat.Core.Entites;
+using Talabat.APIs.Errors;
+using Talabat.APIs.Helpers;
+using Talabat.APIs.Middlewares;
 using Talabat.Core.Repositories;
 using Talabat.Repository;
 using Talabat.Repository.Data;
@@ -21,15 +24,6 @@ namespace Talabat.APIs
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            /// Allow DI Non Generic
-            ///builder.Services.AddScoped<IGenericRepository<Product>,GenericRepository<Product>>();
-            ///builder.Services.AddScoped<IGenericRepository<ProductBrand>,GenericRepository<ProductBrand>>();
-            ///builder.Services.AddScoped<IGenericRepository<ProductType>,GenericRepository<ProductType>>();
-
-            /// Allow DI Generic
-            builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-
-
             // Allow Dependency Injection for my Context (StoreContext)
             builder.Services.AddDbContext<StoreContext>(Options =>
             {
@@ -38,7 +32,40 @@ namespace Talabat.APIs
 
             );
 
-        
+            /// Allow DI Non Generic
+            ///builder.Services.AddScoped<IGenericRepository<Product>,GenericRepository<Product>>();
+            ///builder.Services.AddScoped<IGenericRepository<ProductBrand>,GenericRepository<ProductBrand>>();
+            ///builder.Services.AddScoped<IGenericRepository<ProductType>,GenericRepository<ProductType>>();
+
+            /// Allow DI Generic
+            builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+
+            // builder.Services.AddAutoMapper(M => M.AddProfile(new MappingProfiles()));
+            builder.Services.AddAutoMapper(typeof(MappingProfiles));
+
+
+            // Validation Error Response - Configure 
+            builder.Services.Configure<ApiBehaviorOptions>(Options =>
+            {
+                Options.InvalidModelStateResponseFactory = actionContext =>
+                {
+                    // ModelState => Dicationary [KeyValuePair]
+                    // Key => Name of Parameter
+                    // Value => Error Message
+
+                    var errors = actionContext.ModelState.Where(E => E.Value.Errors.Count > 0)
+                    .SelectMany(E => E.Value.Errors)
+                    .Select(E => E.ErrorMessage)
+                    .ToArray();
+
+                    var ValidationErrorResponse = new ApiValidationErrorResponse
+                    {
+                        Errors = errors
+                    };
+
+                    return new BadRequestObjectResult(ValidationErrorResponse);
+                };
+            });
 
             #endregion
 
@@ -83,6 +110,8 @@ namespace Talabat.APIs
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
+                app.UseMiddleware<ExceptionMiddleware>();    // Custom Middleware for Internal Server Error
+
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
@@ -91,6 +120,7 @@ namespace Talabat.APIs
 
             app.UseAuthorization();
 
+            app.UseStaticFiles(); // We must add this Middleware To can Read static files (such as images)
 
             app.MapControllers();
 
