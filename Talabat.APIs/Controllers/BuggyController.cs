@@ -27,7 +27,7 @@ public class BuggyController : APIBaseController
     }
 
 
-    [HttpGet("ServerError")]
+    [HttpGet("ServerError")]    // BaseUrl/api/Buggy/ServerError
     public ActionResult GetServerError()
     {
         var Product = _dbcontext.Products.Find(122);
@@ -41,14 +41,14 @@ public class BuggyController : APIBaseController
     }
 
 
-    [HttpGet("BadRequest")]
+    [HttpGet("BadRequest")]     // BaseUrl/api/Buggy/BadRequest
     public ActionResult GetBadRequest()
     {
-        return BadRequest();
+        return BadRequest(new ApiResponse(400));
     }
 
-
-    [HttpGet("BadRequest/{id}")]
+    // Validation Error
+    [HttpGet("BadRequest/{id}")]   // BaseUrl/api/Buggy/BadRequest/one
     public ActionResult GetServerError(int id)
     {
         return Ok();

@@ -1,10 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Talabat.Core.Entites;
 using Talabat.Core.Specifications;
 
@@ -23,7 +17,17 @@ public static class SpecificationsEvalutor<T> where T : BaseEntity
 
         if (Spec.Criteria is not null)
         {
-            Query = Query.Where(Spec.Criteria);   // _dbContext.Set<T>().Where(P => P.Id == id)
+            Query = Query.Where(Spec.Criteria);   // _dbContext.Set<T>().Where(P => P.Id == id)  Criteria   لو في   
+        }
+
+        if (Spec.OrderBy is not null)  // P => P.Name
+        {
+            Query = Query.OrderBy(Spec.OrderBy); //_dbContext.Products.OrederBy(P => P.Name)
+        }
+
+        if (Spec.OrderByDescending is not null)
+        {
+            Query = Query.OrderByDescending(Spec.OrderByDescending);  //_dbContext.Products.OrderByDescending(P => P.Name)
         }
 
         Query = Spec.Includes.Aggregate(Query, (CurrentQuery, IncludeExpression) => CurrentQuery.Include(IncludeExpression));

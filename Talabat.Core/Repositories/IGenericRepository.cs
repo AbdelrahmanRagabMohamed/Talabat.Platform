@@ -6,7 +6,8 @@ public interface IGenericRepository<T> where T : BaseEntity
 {
 
     #region Without Specifications 
-    Task<IEnumerable<T>> GetAllAsync();
+
+    Task<IReadOnlyList<T>> GetAllAsync();
 
     Task<T> GetByIdAsync(int id);
 
@@ -15,7 +16,7 @@ public interface IGenericRepository<T> where T : BaseEntity
 
     #region With Specifications 
 
-    Task<IEnumerable<T>> GetAllWithSpecAsync(ISpecefications<T> Spec);
+    Task<IReadOnlyList<T>> GetAllWithSpecAsync(ISpecefications<T> Spec);
 
     Task<T> GetByIdWithSpecAsync(ISpecefications<T> Spec);
 

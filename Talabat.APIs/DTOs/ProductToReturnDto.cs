@@ -1,10 +1,8 @@
-﻿using Talabat.Core.Entites;
+﻿namespace Talabat.APIs.DTOs;
 
-namespace Talabat.APIs.DTOs;
-
-public class ProductToRetuenDto
+public class ProductToReturnDto
 {
-    public int Id { get; set; } 
+    public int Id { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }
     public string PictureUrl { get; set; }
