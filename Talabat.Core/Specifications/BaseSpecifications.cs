@@ -8,6 +8,9 @@ public class BaseSpecifications<T> : ISpecefications<T> where T : BaseEntity
     public List<Expression<Func<T, object>>> Includes { get; set; } = new List<Expression<Func<T, object>>>(); // تجنب التكرار
     public Expression<Func<T, object>> OrderBy { get; set; }
     public Expression<Func<T, object>> OrderByDescending { get; set; }
+    public int Skip { get; set; }
+    public int Take { get; set; }
+    public bool IsPaginationEnabled { get; set; }
 
 
     // GET ALL
@@ -32,6 +35,13 @@ public class BaseSpecifications<T> : ISpecefications<T> where T : BaseEntity
     public void AddOrderByDescending(Expression<Func<T, object>> OrderByDescExpression)
     {
         OrderByDescending = OrderByDescExpression;
+    }
+
+    public void ApplyPagination(int skip, int take)
+    {
+        IsPaginationEnabled = true;
+        Skip = skip;
+        Take = take;
     }
 
 }

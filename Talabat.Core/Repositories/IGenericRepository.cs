@@ -20,5 +20,6 @@ public interface IGenericRepository<T> where T : BaseEntity
 
     Task<T> GetByIdWithSpecAsync(ISpecefications<T> Spec);
 
+    Task<int> GetCountWithSpecAsync(ISpecefications<T> Spec);
     #endregion
 }

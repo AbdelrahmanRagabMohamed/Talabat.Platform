@@ -30,6 +30,12 @@ public static class SpecificationsEvalutor<T> where T : BaseEntity
             Query = Query.OrderByDescending(Spec.OrderByDescending);  //_dbContext.Products.OrderByDescending(P => P.Name)
         }
 
+        if (Spec.IsPaginationEnabled)
+        {
+            Query = Query.Skip(Spec.Skip).Take(Spec.Take);  // _dbContext.Products.Skip(PageSize * (PageIndex - 1)).Take(PageSize)
+        }
+
+
         Query = Spec.Includes.Aggregate(Query, (CurrentQuery, IncludeExpression) => CurrentQuery.Include(IncludeExpression));
         // First Aggergate => _dbContext.Set<T>().Where(P => P.Id == id).Include(P => P.ProductBrand)
         // Second Aggergate => _dbContext.Set<T>().Where(P => P.Id == id).Include(P => P.ProductBrand).Include(P => P.ProductType)
