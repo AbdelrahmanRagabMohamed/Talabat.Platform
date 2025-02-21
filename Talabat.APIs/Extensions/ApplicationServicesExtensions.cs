@@ -22,6 +22,9 @@ public static class ApplicationServicesExtensions
         // builder.Services.AddAutoMapper(M => M.AddProfile(new MappingProfiles()));
         Services.AddAutoMapper(typeof(MappingProfiles));
 
+        // Allow Dependcy Injection
+        Services.AddScoped(typeof(IBasketRepository), typeof(BasketRepository));
+
         #region Error Handling
 
         // Validation Error Response - Configure 

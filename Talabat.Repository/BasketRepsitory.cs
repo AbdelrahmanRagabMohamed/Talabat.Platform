@@ -4,12 +4,12 @@ using Talabat.Core.Entites;
 using Talabat.Core.Repositories;
 
 namespace Talabat.Repository;
-internal class BasketRepsitory : IBasketRepository
+public class BasketRepository : IBasketRepository
 {
     private readonly IDatabase _database;
 
     // Ask CLR To Create object from Class that Implement Interface IConnectionMultiplexer => To Deal with Redis 
-    public BasketRepsitory(IConnectionMultiplexer redis)
+    public BasketRepository(IConnectionMultiplexer redis)
     {
         _database = redis.GetDatabase();
     }
@@ -26,6 +26,7 @@ internal class BasketRepsitory : IBasketRepository
     {
         var JsonBaket = JsonSerializer.Serialize(Basket);
 
+        // Id بنفس ال  Create و لو مش موجوده هيعملها Update لو موجوده هيعملها   
         var CreatedOrUpdated = await _database.StringSetAsync(Basket.Id, JsonBaket, TimeSpan.FromDays(1));
 
         if (!CreatedOrUpdated) return null;
