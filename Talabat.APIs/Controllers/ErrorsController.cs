@@ -9,6 +9,6 @@ public class ErrorsController : ControllerBase
 {
     public ActionResult Error(int Code)
     {
-        return NotFound(new ApiResponse(Code, "End Point is Not Found"));
+        return NotFound(new ApiResponse(Code));
     }
 }

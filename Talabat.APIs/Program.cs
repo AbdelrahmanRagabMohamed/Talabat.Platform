@@ -1,9 +1,12 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
 using Talabat.APIs.Extensions;
 using Talabat.APIs.Middlewares;
+using Talabat.Core.Entites.Identity;
 using Talabat.Repository;
 using Talabat.Repository.Data;
+using Talabat.Repository.Identity;
 
 namespace Talabat.APIs
 {
@@ -23,13 +26,18 @@ namespace Talabat.APIs
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            // Allow Dependency Injection for my Context (StoreContext)
+            // Allow Dependency Injection for Buisness Context (StoreContext)
             builder.Services.AddDbContext<StoreContext>(Options =>
             {
                 Options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-            }
+            });
 
-            );
+
+            // Allow Dependency Injection for AppIdentityDbContext
+            builder.Services.AddDbContext<AppIdentityDbContext>(Options =>
+            {
+                Options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityConnection"));
+            });
 
             // Allow Dependency Injection For Redis
             builder.Services.AddSingleton<IConnectionMultiplexer>(Options =>
@@ -41,6 +49,9 @@ namespace Talabat.APIs
             });
 
             builder.Services.AddApplicationServices(); // Extension Method
+
+            builder.Services.AddIdentityServices(builder.Configuration);    // Extension Method 
+
 
             #endregion
 
@@ -66,7 +77,15 @@ namespace Talabat.APIs
                 // Update - Database
                 await dbContext.Database.MigrateAsync();
 
-                // call Seeding functions 
+                var IdentityDbContext = Services.GetRequiredService<AppIdentityDbContext>();  // Ask ClR to Create object from StoreContext Explicitly
+                await IdentityDbContext.Database.MigrateAsync();   // Update - Database
+
+
+                // Ask ClR to Create object from UserManager<AppUser> Explicitly
+                var UserManger = Services.GetRequiredService<UserManager<AppUser>>();
+                await AppIdentityDbContextSeed.SeedUserAsync(UserManger);
+
+                // Call Seeding functions 
                 await StoreContextSeed.SeedAsync(dbContext);
 
             }
@@ -97,6 +116,9 @@ namespace Talabat.APIs
             app.UseAuthorization();
 
             app.UseStaticFiles(); // We must add this Middleware To can Read static files (such as images)
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.MapControllers();
 
