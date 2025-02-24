@@ -20,7 +20,7 @@ public class ProductSpecParams
     public string? Search
     {
         get { return search; }
-        set { search = value?.ToLower(); }
+        set { search = value.ToLower(); }
     }
 
 

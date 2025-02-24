@@ -115,9 +115,10 @@ namespace Talabat.APIs
 
             app.UseAuthorization();
 
-            app.UseStaticFiles(); // We must add this Middleware To can Read static files (such as images)
+            app.UseStaticFiles(); // We Must Add This Middleware To Can Read Static Files (Such as Images)
 
             app.UseAuthentication();
+
             app.UseAuthorization();
 
             app.MapControllers();

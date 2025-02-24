@@ -23,7 +23,7 @@ public static class IdentityServicesExtension
         // Allow DI For : SignInManeger / UserManger / RoleManger
         Services.AddAuthentication(Options =>
         {
-            // To Write [Authorize] Instead of [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]    // فيها مشكلة
+            // To Write [Authorize] Instead of [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] // فيها مشكلة
             Options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
             Options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 
