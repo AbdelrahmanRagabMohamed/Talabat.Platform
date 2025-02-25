@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using Talabat.Core.Entites;
+using Talabat.Core.Entites.Order_Aggregate;
 using Talabat.Repository.Data;
 
 namespace Talabat.Repository;
@@ -15,20 +16,14 @@ public static class StoreContextSeed
         {
 
             // Seeding Brands
-
             var BrandsData = File.ReadAllText("../Talabat.Repository/Data/DataSeed/brands.json"); //convert json data to string [Serializer]
             var Brands = JsonSerializer.Deserialize<List<ProductBrand>>(BrandsData); // convert string data to json [Deserializer]
 
             if (Brands?.Count > 0)
             {
                 foreach (var brand in Brands)
-                {
                     await dbContext.Set<ProductBrand>().AddAsync(brand);
-                }
-
-                await dbContext.SaveChangesAsync();
             }
-
         }
 
         if (!dbContext.ProductTypes.Any())
@@ -41,13 +36,8 @@ public static class StoreContextSeed
             if (Types?.Count > 0)
             {
                 foreach (var type in Types)
-                {
-                    dbContext.Set<ProductType>().Add(type);
-                }
-
-                await dbContext.SaveChangesAsync();
+                    await dbContext.Set<ProductType>().AddAsync(type);
             }
-
         }
 
         if (!dbContext.Products.Any())
@@ -59,11 +49,26 @@ public static class StoreContextSeed
             if (Products?.Count > 0)
             {
                 foreach (var product in Products)
-                {
-                    dbContext.Set<Product>().Add(product);
-                }
-                await dbContext.SaveChangesAsync();
+                    await dbContext.Set<Product>().AddAsync(product);
             }
         }
+
+
+        if (!dbContext.DeliveryMethods.Any())
+        {
+            // Seeding DeliveryMethods
+            var DeliveryMethodsData = File.ReadAllText("../Talabat.Repository/Data/DataSeed/delivery.json");
+            var DeliveryMethods = JsonSerializer.Deserialize<List<DeliveryMethod>>(DeliveryMethodsData);
+
+            if (DeliveryMethods?.Count > 0)
+            {
+                foreach (var DeliveryMethod in DeliveryMethods)
+                    await dbContext.Set<DeliveryMethod>().AddAsync(DeliveryMethod);
+            }
+        }
+
+
+        await dbContext.SaveChangesAsync();
+
     }
 }
