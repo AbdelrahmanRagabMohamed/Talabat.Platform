@@ -8,7 +8,7 @@ public class BasketRepository : IBasketRepository
 {
     private readonly IDatabase _database;
 
-    // Ask CLR To Create object from Class that Implement Interface IConnectionMultiplexer => To Deal with Redis 
+    // Ask CLR To Create object from Class that Implement Interface IConnectionMultiplexer => To Deal with Redis. 
     public BasketRepository(IConnectionMultiplexer redis)
     {
         _database = redis.GetDatabase();
