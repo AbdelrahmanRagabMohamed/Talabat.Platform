@@ -92,7 +92,7 @@ public class ProductsController : APIBaseController
 
 
     // Get All Brands Endpoint
-    [HttpGet("Brands")]   // BaseUrl/api/Products/Brands
+    [HttpGet("Brands")]  // BaseUrl/api/Products/Brands
     public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetBrands()
     {
         var Brands = await _brandRepo.GetAllAsync();
