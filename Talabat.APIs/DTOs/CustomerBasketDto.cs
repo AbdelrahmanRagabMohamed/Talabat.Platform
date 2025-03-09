@@ -9,4 +9,9 @@ public class CustomerBasketDto
 
     [Required]
     public List<BasketItemDto> Items { get; set; }
+
+    public string? PaymentIntentId { get; set; }
+    public string? ClientSecret { get; set; }
+    public int? DeliveryMethodId { get; set; }
+
 }

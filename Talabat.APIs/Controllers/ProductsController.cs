@@ -68,7 +68,7 @@ public class ProductsController : APIBaseController
     public async Task<ActionResult<ProductToReturnDto>> GetProduct(int id)
     {
         var Spec = new ProducWithBrandAndTypeSpecifications(id);
-        var product = await _productRepo.GetByIdWithSpecAsync(Spec);
+        var product = await _productRepo.GetEntityWithSpecAsync(Spec);
 
         if (product == null)
         {

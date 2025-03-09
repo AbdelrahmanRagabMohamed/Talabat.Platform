@@ -3,12 +3,15 @@ using Talabat.Core.Entites;
 using Talabat.Core.Entites.Order_Aggregate;
 using Talabat.Core.Repositories;
 using Talabat.Core.Services;
+using Talabat.Core.Specifications;
+using Talabat.Core.Specifications.Order_Spec;
 
 namespace Talabat.Service;
 public class OrderService : IOrderService
 {
     private readonly IBasketRepository _basketRepository;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IPaymentService _paymentService;
 
     // Without UnitOfWork
     ///private readonly IGenericRepository<Product> _productRepo;
@@ -22,10 +25,11 @@ public class OrderService : IOrderService
         ///IGenericRepository<DeliveryMethod> DeliveryMethodRepo,
         ///IGenericRepository<Order> OrderRepo
 
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork, IPaymentService paymentService)
     {
         _basketRepository = basketRepository;
-        this._unitOfWork = unitOfWork;
+        _unitOfWork = unitOfWork;
+        _paymentService = paymentService;
 
         // Without UnitOfWork
         ///_productRepo = ProductRepo;
@@ -62,7 +66,16 @@ public class OrderService : IOrderService
         var DeliveryMethod = await _unitOfWork.Repository<DeliveryMethod>().GetByIdAsync(DeliveryMethodId);
 
         // 5.Create Order
-        var Order = new Order(BuyerEmail, ShippingAddress, DeliveryMethod, OrderIteams, SubTotal);
+        var Spec = new OrderWithPaymentIntentSpec(Basket.PaymentIntentId);
+        var ExsitedOrder = await _unitOfWork.Repository<Order>().GetEntityWithSpecAsync(Spec);
+
+        if (ExsitedOrder is not null)
+        {
+            _unitOfWork.Repository<Order>().Delete(ExsitedOrder);
+
+            await _paymentService.CreateOrUpdatePaymentIntent(BasketId);
+        }
+        var Order = new Order(BuyerEmail, ShippingAddress, DeliveryMethod, OrderIteams, SubTotal, Basket.PaymentIntentId);
 
         // 6.Add Order Locally
         await _unitOfWork.Repository<Order>().AddAsync(Order);
@@ -74,13 +87,24 @@ public class OrderService : IOrderService
     }
 
 
-    public Task<Order> GetOrderByIdForSpecificUserAsync(string BuyerEmail, int OrderId)
+    public async Task<Order?> GetOrderByIdForSpecificUserAsync(string BuyerEmail, int OrderId)
     {
-        throw new NotImplementedException();
+        // It has a Filteration and Includes and OrderBy
+        var Spec = new OrderSpecification(BuyerEmail, OrderId);
+
+        var Order = await _unitOfWork.Repository<Order>().GetEntityWithSpecAsync(Spec);
+        return Order;
     }
 
-    public Task<IReadOnlyList<Order>> GetOrdersForSpecificUserAsync(string BuyerEmail)
+
+    public async Task<IReadOnlyList<Order>> GetOrdersForSpecificUserAsync(string BuyerEmail)
     {
-        throw new NotImplementedException();
+        // It has a Filteration and Includes and OrderBy
+        var Spec = new OrderSpecification(BuyerEmail);
+        var Orders = await _unitOfWork.Repository<Order>().GetAllWithSpecAsync(Spec);
+
+        return Orders;
     }
+
+
 }

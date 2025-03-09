@@ -44,7 +44,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
         return await ApplySpecifications(Spec).ToListAsync();
     }
 
-    public async Task<T> GetByIdWithSpecAsync(ISpecefications<T> Spec)
+    public async Task<T> GetEntityWithSpecAsync(ISpecefications<T> Spec)
     {
         //return await SpecificationsEvalutor<T>.GetQuery(_dbContext.Set<T>(), Spec).FirstOrDefaultAsync();
         return await ApplySpecifications(Spec).FirstOrDefaultAsync();

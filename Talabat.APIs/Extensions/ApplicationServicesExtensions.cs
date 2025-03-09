@@ -1,8 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Talabat.APIs.Errors;
 using Talabat.APIs.Helpers;
+using Talabat.Core;
 using Talabat.Core.Repositories;
+using Talabat.Core.Services;
 using Talabat.Repository;
+using Talabat.Service;
+using Talabat.Services;
 
 namespace Talabat.APIs.Extensions;
 
@@ -24,6 +28,13 @@ public static class ApplicationServicesExtensions
 
         // Allow Dependcy Injection
         Services.AddScoped(typeof(IBasketRepository), typeof(BasketRepository));
+
+        // Allow Dependcy Injection
+        Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+        Services.AddScoped<IOrderService, OrderService>();
+
+        Services.AddScoped<IPaymentService, PaymentService>();
 
         #region Error Handling
 
