@@ -6,12 +6,12 @@ using Talabat.Core.Entites;
 using Talabat.Core.Repositories;
 
 namespace Talabat.APIs.Controllers;
-public class BasketsController : APIBaseController
+public class BasketController : APIBaseController
 {
     private readonly IBasketRepository _basketRepository;
     private readonly IMapper _mapper;
 
-    public BasketsController(IBasketRepository basketRepository, IMapper mapper)
+    public BasketController(IBasketRepository basketRepository, IMapper mapper)
     {
         _basketRepository = basketRepository;
         _mapper = mapper;

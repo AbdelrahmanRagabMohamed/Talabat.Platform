@@ -33,7 +33,7 @@ public class OrdersController : APIBaseController
     public async Task<ActionResult<Order>> CreateOrder(OrderDto orderDto)
     {
         var BuyerEmail = User.FindFirstValue(ClaimTypes.Email);
-        var MappedAddress = _mapper.Map<AddressDto, Address>(orderDto.ShippingAddress);
+        var MappedAddress = _mapper.Map<AddressDto, Address>(orderDto.shipToAddress);
 
         var Order = await _orderService.CreateOrderAsync(BuyerEmail, orderDto.BasketId, orderDto.DeliveryMethodId, MappedAddress);
 
@@ -88,9 +88,6 @@ public class OrdersController : APIBaseController
         var DeliveryMethods = await _unitOfWork.Repository<DeliveryMethod>().GetAllAsync();
         return Ok(DeliveryMethods);
     }
-
-
-
 
 }
 

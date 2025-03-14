@@ -119,7 +119,7 @@ public class AccountsController : APIBaseController
 
     // GET Current User Address EndPoint => GET : BaseUrl/api/Accounts/UserAdress
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    [HttpGet("UserAdress")]
+    [HttpGet("Address")]
     public async Task<ActionResult<AddressDto>> GetUserAdress()
     {
         //var Email = User.FindFirstValue(ClaimTypes.Email);
@@ -136,7 +136,7 @@ public class AccountsController : APIBaseController
 
     // Update Current User Address EndPoint => PUT : BaseUrl/api/Accounts/UserAdress
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    [HttpPut("UserAdress")]
+    [HttpPut("UserAddress")]
     public async Task<ActionResult<AddressDto>> UpdateUserAdress(AddressDto UpdatedAdress)
     {
         var user = await _userManager.FindUserWithAddressAsync(User);

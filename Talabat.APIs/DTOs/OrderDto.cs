@@ -11,5 +11,5 @@ public class OrderDto
     public int DeliveryMethodId { get; set; }
 
     [Required]
-    public AddressDto ShippingAddress { get; set; }
+    public AddressDto shipToAddress { get; set; }
 }

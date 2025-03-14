@@ -5,6 +5,7 @@ using Talabat.Core.Entites;
 using Talabat.Core.Entites.Order_Aggregate;
 using Talabat.Core.Repositories;
 using Talabat.Core.Services;
+using Talabat.Core.Specifications.Order_Spec;
 using Product = Talabat.Core.Entites.Product;
 
 namespace Talabat.Services;
@@ -85,6 +86,28 @@ public class PaymentService : IPaymentService
 
         await _basketRepository.UpdateBasketAsync(Basket);
         return Basket;
+
+    }
+
+    public async Task<Order> UpdatePaymentIntentToSuccessOrFailed(string PaymentIntentId, bool flag)
+    {
+        var Spec = new OrderWithPaymentIntentSpec(PaymentIntentId);
+        var Order = await _unitOfWork.Repository<Order>().GetEntityWithSpecAsync(Spec);
+
+        if (flag)
+        {
+            Order.Status = OrderStatus.PaymentReceived;
+        }
+
+        else
+        {
+            Order.Status = OrderStatus.PaymentFailed;
+        }
+
+        _unitOfWork.Repository<Order>().Update(Order);
+        await _unitOfWork.CompleteAsync();
+
+        return Order;
 
     }
 

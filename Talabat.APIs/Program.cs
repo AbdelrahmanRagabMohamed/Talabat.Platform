@@ -52,6 +52,16 @@ namespace Talabat.APIs
 
             builder.Services.AddIdentityServices(builder.Configuration);    // Extension Method 
 
+            builder.Services.AddCors(Options =>
+            {
+                Options.AddPolicy("MyPolicy", Policy =>
+                {
+                    Policy.AllowAnyHeader();
+                    Policy.AllowAnyMethod();
+                    Policy.WithOrigins(builder.Configuration["FrontBaseUrl"]);
+                });
+            });
+
 
             #endregion
 
@@ -116,6 +126,8 @@ namespace Talabat.APIs
             app.UseAuthorization();
 
             app.UseStaticFiles(); // We Must Add This Middleware To Can Read Static Files (Such as Images)
+
+            app.UseCors("MyPolicy");
 
             app.UseAuthentication();
 
