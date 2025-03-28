@@ -11,10 +11,12 @@ public class PaymentsController : APIBaseController
 
     private readonly IPaymentService _paymentService;
     const string endpointSecret = "whsec_e8fa4f5b14f0f005aab5c1be380cc1abbb5434c134eb4155bbe18297777f0ac3";
+
     public PaymentsController(IPaymentService paymentService)
     {
         _paymentService = paymentService;
     }
+
 
     // Create Or Update Payment Intent EndPoint => POST : baseUrl/api/Payment/basketId
     [HttpPost("{basketId}")]
@@ -63,4 +65,5 @@ public class PaymentsController : APIBaseController
         }
 
     }
+
 }
